@@ -15,18 +15,18 @@ export function starry_init() {
         ctx.arc(this.x, this.y, this.r, 0, 2 * Math.PI, false);
         ctx.closePath();
         ctx.fill();
-    }
+    };
 
     Star.prototype.move = function() {
         this.y -= .15;
         if (this.y <= -10) this.y = HEIGHT + 10;
         this.draw();
-    }
+    };
 
     Star.prototype.die = function() {
         stars[this.id] = null;
         delete stars[this.id];
-    }
+    };
 
 
     function Dot(id, x, y) {
@@ -51,7 +51,7 @@ export function starry_init() {
         ctx.arc(this.x, this.y, this.r, 0, 2 * Math.PI, false);
         ctx.closePath();
         ctx.fill();
-    }
+    };
 
     Dot.prototype.link = function() {
         if (this.id == 0) return;
@@ -67,7 +67,7 @@ export function starry_init() {
         if (previousDot3 != false) ctx.lineTo(previousDot3.x, previousDot3.y);
         ctx.stroke();
         ctx.closePath();
-    }
+    };
 
     function getPreviousDot(id, stepback) {
         if (id == 0 || id - stepback < 0) return false;
@@ -88,33 +88,27 @@ export function starry_init() {
 
         this.draw();
         this.link();
-    }
+    };
 
     Dot.prototype.die = function() {
         dots[this.id] = null;
         delete dots[this.id];
-    }
-
+    };
 
     var canvas  = document.getElementById('canvas'),
         ctx = canvas.getContext('2d'),
         WIDTH,
         HEIGHT,
-        mouseMoving = false,
-        mouseX,
-        mouseY,
         stars = [],
         initStarsPopulation = 80,
-        dots = [],
-        dotsMinDist = 2,
-        maxDistFromCursor = 50;
+        dots = [];
 
     setCanvasSize();
     init();
 
     function setCanvasSize() {
-        WIDTH = document.documentElement.clientWidth,
-            HEIGHT = document.documentElement.clientHeight;
+        WIDTH = document.documentElement.clientWidth;
+        HEIGHT = document.documentElement.clientHeight;
 
         canvas.setAttribute("width", WIDTH);
         canvas.setAttribute("height", HEIGHT);
@@ -146,5 +140,6 @@ export function starry_init() {
     function degToRad(deg) {
         return deg * (Math.PI / 180);
     }
+
 }
 

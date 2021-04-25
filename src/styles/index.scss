@@ -13,7 +13,7 @@ body {
 }
 
 label {
-  font-weight: 700;
+  //font-weight: 700;
 }
 
 html {
@@ -62,4 +62,26 @@ div:focus {
 // main-container global css
 .app-container {
   padding: 20px;
+}
+
+/* mine */
+.el-card:not(:first-child) {
+    margin-top: 20px;
+}
+.card-icon {
+    height: 22px;
+    line-height: 22px;
+}
+.query-form {
+    padding: 10px 20px;
+}
+.operation-card {
+    height: 22px;
+    line-height: 22px;
+
+    .btn-div {
+        text-align: right;
+        padding-right: 30px;
+        margin-top: -5px;
+    }
 }
