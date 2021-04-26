@@ -33,8 +33,11 @@
                             :filter-node-method="filterMenu"
                             @node-click="handleNodeClick"
                             :expand-on-click-node="false"
-                            default-expand-all
+                            :default-expand-all="true"
                             highlight-current
+                            draggable
+                            @node-drag-enter="handleDragEnter"
+                            @node-drop="handleDrop"
                             ref="menuTree">
                             <span class="menu-tree-node" slot-scope="{ node, data }">
                                 <span class="custom-tree-node-label">
@@ -110,6 +113,11 @@ export default {
                 loading: true,
                 submitLoading: false,
                 submitLoadingText: "正在保存，请稍候...",
+            },
+            position: {
+                before: "前",
+                after: "后",
+                inner: "中"
             },
             query_params: {
                 pid: "",
@@ -284,6 +292,44 @@ export default {
                 }).catch(() => {});
             }
         },
+        handleDragEnter(draggingNode, dropNode) {
+            if (!dropNode.expanded) {
+                dropNode.expanded = true;
+            }
+        },
+        handleDrop(draggingNode, dropNode, position) {
+            this.$confirm('确认将【' + draggingNode.data.menuName + '】及其所有子菜单移动到【' + dropNode.data.menuName + '】' + this.position[position] + '?', '确认', {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                type: 'warning'
+            }).then(() => {
+                let data = {
+                    menuId: draggingNode.data.menuId
+                };
+
+                if (position === "inner") {
+                    data.pid = dropNode.data.menuId;
+                    data.sort = 0;
+                } else {
+                    data.pid = dropNode.data.pid;
+                    if (position === "before") {
+                        data.sort = parseInt(dropNode.data.sort) - 1;
+                    } else if (position === "after") {
+                        data.sort = parseInt(dropNode.data.sort) + 1;
+                    }
+                }
+
+                this.loading.submitLoading = true;
+                updateMenu(data).then(() => {
+                    this.$message.success("保存成功");
+                    this.queryList();
+                }).catch(() => {}).finally(() => {
+                    this.loading.submitLoading = false;
+                });
+            }).catch(() => {
+                this.queryList();
+            });
+        }
     }
 }
 </script>

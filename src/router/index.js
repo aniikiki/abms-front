@@ -58,19 +58,19 @@ export const constantRoutes = [
     {
         path: '/contacts',
         component: Layout,
-        redirect: '/example/table',
-        name: 'Example',
+        redirect: '/contacts/list',
+        name: 'Contacts',
         meta: {title: '联系人管理', icon: 'el-icon-notebook-1'},
         children: [
             {
-                path: 'table',
-                name: 'Table',
-                component: () => import('@/views/table/index'),
+                path: 'list',
+                name: 'List',
+                component: () => import('@/views/contacts/list'),
                 meta: {title: '联系人列表', icon: 'el-icon-notebook-2'}
             },
             {
-                path: 'tree',
-                name: 'Tree',
+                path: 'group',
+                name: 'Group',
                 component: () => import('@/views/tree/index'),
                 meta: {title: '联系人群组', icon: 'el-icon-collection'}
             }

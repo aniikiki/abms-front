@@ -6,6 +6,7 @@
         @current-change="handleCurrentChange"
         :current-page="pageNum"
         :page-size="pageSize"
+        :page-sizes="pageSizes"
         :total="total">
     </el-pagination>
 </template>
@@ -32,7 +33,10 @@
                 type: String,
                 default: 'total, sizes, prev, pager, next, jumper',
                 required: false
-            }
+            },
+            pageSizes: {
+                required: false
+            },
         },
         data() {
             return {
