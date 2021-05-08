@@ -27,7 +27,14 @@
                         <el-input v-model="query_params.contactNickname" placeholder="联系人地址"></el-input>
                     </el-form-item>
                     <el-form-item label="联系人群组">
-                        <dict-select v-model="query_params.status" dictType="status" placeholder="联系人群组" clearable></dict-select>
+                        <el-select v-model="query_params.groupIdArr" multiple collapse-tags clearable placeholder="联系人群组">
+                            <el-option
+                                v-for="item in groupList"
+                                :key="item.groupId"
+                                :label="item.groupName"
+                                :value="item.groupId">
+                            </el-option>
+                        </el-select>
                     </el-form-item>
                     <el-form-item label="联系人状态">
                         <dict-select v-model="query_params.status" dictType="status" placeholder="联系人状态" clearable></dict-select>
@@ -49,7 +56,8 @@
                 </el-row>
             </el-card>
             <el-card shadow="never">
-                <el-row :gutter="10">
+                <el-row :gutter="10" v-loading="loading.loading">
+                    <div class="el-table__empty-block" v-if="contactList.length === 0"><span class="el-table__empty-text">暂无数据</span></div>
                     <el-col :span="8" v-for="item in contactList" :key="item.contactId" style="margin: 10px 0;">
                         <el-card :title="item.contactName">
                             <div slot="header" v-if="item.status != '-1'">
@@ -102,6 +110,7 @@
 </div></template>
 <script>
 import { getContactList, getContactInfo, deleteContact } from '@/api/contacts.js'
+import { getAllGroup } from '@/api/contactsGroup.js'
 
 export default {
     components: {
@@ -128,11 +137,13 @@ export default {
                 pageNum: 1,
                 total: 0
             },
-            contactList: []
+            contactList: [],
+            groupList: [],
         }
     },
     async created() {
         this.queryList();
+        this.groupList = await getAllGroup({});
     },
     methods: {
         tableHeaderColor() {

@@ -9,7 +9,7 @@
 				<span class="svg-container">
 					<svg-icon icon-class="user" />
 				</span>
-				<el-input v-model="loginForm.username" ref="username" placeholder="请输入用户名" tabindex="1" auto-complete="on"/>
+				<el-input v-model="loginForm.username" ref="username" placeholder="请输入用户名" tabindex="1" auto-complete="on" @keyup.enter.native="handleLogin"/>
 			</el-form-item>
 
 			<el-form-item prop="password">

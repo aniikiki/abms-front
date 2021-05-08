@@ -9,6 +9,14 @@ export function getContactList(params, data) {
     })
 }
 
+export function getAllContact(data) {
+    return request({
+        url: '/contacts/all',
+        method: 'post',
+        data: data
+    })
+}
+
 export function getContactInfo(contactId) {
     return request({
         url: '/contacts/info/' + contactId,

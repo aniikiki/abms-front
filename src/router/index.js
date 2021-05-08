@@ -71,7 +71,7 @@ export const constantRoutes = [
             {
                 path: 'group',
                 name: 'Group',
-                component: () => import('@/views/tree/index'),
+                component: () => import('@/views/contactsGroup/list'),
                 meta: {title: '联系人群组', icon: 'el-icon-collection'}
             }
         ]
