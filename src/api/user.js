@@ -15,6 +15,13 @@ export function getInfo() {
     })
 }
 
+export function getMenu() {
+    return request({
+        url: '/login/menu',
+        method: 'get'
+    })
+}
+
 export function logout() {
     return request({
         url: '/login/logout',
@@ -66,5 +73,20 @@ export function deleteUser(userId) {
     return request({
         url: '/user/delete/' + userId,
         method: 'post'
+    })
+}
+
+export function getUserRole(userId) {
+    return request({
+        url: '/user/role/' + userId,
+        method: 'get'
+    })
+}
+
+export function assignRole(userId, data) {
+    return request({
+        url: '/user/assign/' + userId,
+        method: 'post',
+        data: data
     })
 }

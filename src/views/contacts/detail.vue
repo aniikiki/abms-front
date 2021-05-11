@@ -66,9 +66,6 @@ export default {
         }
     },
     methods: {
-        tableHeaderColor() {
-            return {background: '#eeeeee80',color: '#606266'};
-        },
         showDialog() {
             this.dialogFormVisible = true
         },

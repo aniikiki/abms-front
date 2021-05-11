@@ -1,13 +1,13 @@
 <template><div>
-    <el-dialog :title="group_info.groupName" :visible.sync="dialogFormVisible" :modal-append-to-body="false" :before-close="handleClose" :close-on-click-modal="false" width="622px">
+    <el-dialog :title="nickname" :visible.sync="dialogFormVisible" :modal-append-to-body="false" :before-close="handleClose" :close-on-click-modal="false" width="622px">
         <el-row>
             <el-col :span="24">
                 <el-transfer
                     filterable
                     :props="props"
                     :titles="titles"
-                    v-model="assign_contact_list"
-                    :data="contact_list">
+                    v-model="assign_role_list"
+                    :data="role_list">
                 </el-transfer>
             </el-col>
         </el-row>
@@ -18,10 +18,10 @@
     </el-dialog>
 </div></template>
 <script>
-    import { assignContacts } from "@/api/contactsGroup";
+import { assignRole } from "@/api/user";
 
 export default {
-    name: "contactsAssign",
+    name: "roleAssign",
     data() {
         return {
             dialogFormVisible: false,
@@ -29,17 +29,18 @@ export default {
             submitLoading: false,
             submitLoadingText: "正在保存，请稍候...",
             props: {
-                key: 'contactId',
-                label: 'contactName'
+                key: 'roleId',
+                label: 'roleName'
             },
             titles: [
-                "未分配联系人",
-                "已分配联系人"
+                "未分配角色",
+                "已分配角色"
             ],
-            group_info: {},
-            contact_list: [],
-            assign_contact_list: [],
-            origin_assign_contact_list: []
+            userId: "",
+            nickname: "",
+            role_list: [],
+            assign_role_list: [],
+            origin_assign_role_list: []
         }
     },
     computed: {
@@ -54,13 +55,12 @@ export default {
             this.dialogFormVisible = false;
         },
         handleSubmit() {
-            if (this.origin_assign_contact_list.join(",") === this.assign_contact_list.join(",")) {
+            if (this.origin_assign_role_list.join(",") === this.assign_role_list.join(",")) {
                 this.handleClose();
                 return false;
             }
             this.submitLoading = true;
-            let groupId = this.group_info.groupId;
-            assignContacts(groupId, this.assign_contact_list).then(() => {
+            assignRole(this.userId, this.assign_role_list).then(() => {
                 this.$message.success("保存成功");
                 this.$parent.queryList();
                 this.handleClose();

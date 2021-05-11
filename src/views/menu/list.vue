@@ -73,13 +73,13 @@
                                 <el-input v-model="menu_card.menu_info.parentMenu" readonly autocomplete="off"></el-input>
                             </el-form-item>
                             <el-form-item label="菜单名称" prop="menuName">
-                                <el-input v-model="menu_card.menu_info.menuName" :readonly="menu_card.readonly" autocomplete="off" show-word-limit maxlength="30"></el-input>
+                                <el-input v-model="menu_card.menu_info.menuName" autocomplete="off" show-word-limit maxlength="30"></el-input>
                             </el-form-item>
                             <el-form-item label="菜单类型" prop="menuType">
                                 <dict-select v-model="menu_card.menu_info.menuType" dictType="menu_type" placeholder="菜单类型" clearable></dict-select>
                             </el-form-item>
                             <el-form-item label="菜单地址" prop="menuUrl">
-                                <el-input v-model="menu_card.menu_info.menuUrl" :readonly="menu_card.readonly" autocomplete="off" show-word-limit maxlength="30"></el-input>
+                                <el-input v-model="menu_card.menu_info.menuUrl" autocomplete="off" show-word-limit maxlength="30"></el-input>
                             </el-form-item>
                             <el-form-item label="菜单排序" prop="sort">
                                 <el-input-number v-model="menu_card.menu_info.sort" size="mini" :min="0"></el-input-number>
@@ -102,6 +102,7 @@
 </div></template>
 <script>
 import { getMenuList, createMenu, updateMenu, deleteMenu } from '@/api/menu.js'
+import { menuDataTranslate } from '@/utils/data-translate.js'
 
 export default {
     components: {
@@ -147,10 +148,14 @@ export default {
             menu_list: [],
             menu_card: {
                 title: "新增菜单",
-                readonly: false,
                 menu_info: {
+                    pid: "0",
+                    menuName: "",
+                    menuType: "",
+                    menuUrl: "",
                     menuIcon: "el-icon-setting",
-                    status: "1"
+                    sort: 0,
+                    status: "1",
                 }
             }
         }
@@ -167,8 +172,7 @@ export default {
             }
         }
     },
-    async created() {
-        await this.$store.dispatch("dict/get", "status");
+    created() {
         this.queryList();
     },
     methods: {
@@ -180,17 +184,12 @@ export default {
                 this.$refs[formName].resetFields();
             }
         },
-        statusFormatter(row) {
-            let status = this.$store.state.dict.status;
-            let key = row.status;
-            return status ? status.get(key) : key;
-        },
         queryList() {
             let data = this.query_params;
 
             this.loading.loading = true;
             getMenuList(data).then((res) => {
-                this.menu_list = this.dataTranslate(res, [], 0);
+                this.menu_list = menuDataTranslate(res, [], 0);
             }).catch(() => {}).finally(() => {
                 this.loading.loading = false;
             });
@@ -208,18 +207,6 @@ export default {
             this.menu_card.title = data.menuName;
             this.menu_card.menu_info.parentMenu = node.parent.data.menuName;
             Object.assign(this.menu_card.menu_info, data);
-        },
-        dataTranslate(source, target, pid) {
-            source.forEach((item) => {
-                if (item.pid == pid) {
-                    let children = this.dataTranslate(source, [], item.menuId);
-                    if (children && children.length) {
-                        item.children = children;
-                    }
-                    target.push(item);
-                }
-            });
-            return target;
         },
         toCreateMenu() {
             this.resetForm("menuInfoForm");

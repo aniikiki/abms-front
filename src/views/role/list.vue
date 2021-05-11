@@ -44,7 +44,7 @@
                         <el-button @click.native.prevent="toUpdateRole(scope.row)" size="mini" >
                             编辑
                         </el-button>
-                        <el-button @click.native.prevent="queryList(scope.row)" size="mini" >
+                        <el-button @click.native.prevent="toAssignMenu(scope.row)" size="mini" >
                             菜单
                         </el-button>
                         <el-popconfirm hide-icon title="是否删除？" @onConfirm="deleteRole(scope.row)" style="margin-left: 10px;">
@@ -61,13 +61,18 @@
         </el-footer>
     </el-container>
     <role-info-detail ref="roleInfoDetail"></role-info-detail>
+    <menu-assign ref="menuAssign"></menu-assign>
 </div></template>
 <script>
-import { getRoleList, getRoleInfo, deleteRole } from '@/api/role.js'
+import axios from 'axios'
+import { getRoleList, getRoleInfo, deleteRole, getRoleMenu } from '@/api/role.js'
+import { getMenuList } from '@/api/menu.js'
+import { menuDataTranslate } from '@/utils/data-translate.js'
 
 export default {
     components: {
         roleInfoDetail: () => import('./detail'),
+        menuAssign: () => import('./assign')
     },
     data() {
         return {
@@ -143,6 +148,35 @@ export default {
                     this.$message.success("删除成功");
                     this.queryList();
                 }).catch(() => {}).finally(() => {
+                    this.loading.loading = false;
+                });
+            }
+        },
+        toAssignMenu(row) {
+            if (row && row.roleId) {
+                this.loading.loading = true;
+                axios.all([
+                    getMenuList({status: "1"}),
+                    getRoleMenu(row.roleId)
+                ]).then(axios.spread((menuListRes, roleMenuRes) => {
+                    this.$refs.menuAssign.roleId = row.roleId;
+                    this.$refs.menuAssign.roleName = row.roleName;
+                    this.$refs.menuAssign.menu_tree = menuDataTranslate(menuListRes, [], 0);
+
+                    let assign_menu = [];
+                    if (roleMenuRes && roleMenuRes.length) {
+                        assign_menu = roleMenuRes.map((item) => {
+                            return item.menu.menuId;
+                        });
+                    }
+                    this.$refs.menuAssign.assign_menu_list = assign_menu.filter((item) => {
+                        return !menuListRes.some((it) => {
+                            return it.pid == item;
+                        });
+                    }).sort((a, b) => a - b);
+
+                    this.$refs.menuAssign.showDialog();
+                })).catch(() => {}).finally(() => {
                     this.loading.loading = false;
                 });
             }

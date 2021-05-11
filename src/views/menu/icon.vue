@@ -29,9 +29,6 @@ export default {
         this.allIcons = icons;
     },
     methods: {
-        tableHeaderColor() {
-            return {background: '#eeeeee80',color: '#606266'};
-        },
         showDialog() {
             this.dialogFormVisible = true
         },

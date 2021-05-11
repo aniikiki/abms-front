@@ -46,7 +46,7 @@
                         <el-button @click.native.prevent="toUpdateUser(scope.row)" size="mini" >
                             编辑
                         </el-button>
-                        <el-button @click.native.prevent="queryList(scope.row)" size="mini" >
+                        <el-button @click.native.prevent="toAssignRole(scope.row)" size="mini" >
                             角色
                         </el-button>
                         <el-popconfirm hide-icon title="是否删除？" @onConfirm="deleteUser(scope.row)" style="margin-left: 10px;">
@@ -63,13 +63,17 @@
         </el-footer>
     </el-container>
     <user-info-detail ref="userInfoDetail"></user-info-detail>
+    <role-assign ref="roleAssign"></role-assign>
 </div></template>
 <script>
-import { getUserList, getUserInfo, deleteUser } from '@/api/user.js'
+import axios from 'axios'
+import { getUserList, getUserInfo, deleteUser, getUserRole } from '@/api/user.js'
+import { getAllRole } from '@/api/role.js'
 
 export default {
     components: {
         userInfoDetail: () => import('./detail'),
+        roleAssign: () => import('./assign'),
     },
     data() {
         return {
@@ -146,6 +150,33 @@ export default {
                     this.$message.success("删除成功");
                     this.queryList();
                 }).catch(() => {}).finally(() => {
+                    this.loading.loading = false;
+                });
+            }
+        },
+        toAssignRole(row) {
+            if (row && row.userId) {
+                this.loading.loading = true;
+                axios.all([
+                    getAllRole({}),
+                    getUserRole(row.userId)
+                ]).then(axios.spread((allRoleRes, userRoleRes) => {
+                    this.$refs.roleAssign.role_list = allRoleRes.map((item) => {
+                        let {roleId, roleName} = item;
+                        return {roleId, roleName};
+                    });
+                    let assign_role = [];
+                    if (userRoleRes && userRoleRes.length) {
+                        assign_role = userRoleRes.map((item) => {
+                            return item.role.roleId;
+                        });
+                    }
+                    this.$refs.roleAssign.assign_role_list = assign_role;
+                    this.$refs.roleAssign.origin_assign_role_list = assign_role;
+                    this.$refs.roleAssign.userId = row.userId;
+                    this.$refs.roleAssign.nickname = row.nickname;
+                    this.$refs.roleAssign.showDialog();
+                })).catch(() => {}).finally(() => {
                     this.loading.loading = false;
                 });
             }
