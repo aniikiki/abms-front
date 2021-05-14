@@ -64,7 +64,6 @@ export default {
 
             this.submitLoading = true;
             let data = [...halfCheckedMenu, ...checkedMenu].sort((a, b) => a - b);
-            console.log(data);
             assignMenu(this.roleId, data).then(() => {
                 this.$message.success("保存成功");
                 this.$parent.queryList();

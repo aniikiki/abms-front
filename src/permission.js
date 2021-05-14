@@ -5,12 +5,13 @@ import NProgress from 'nprogress' // progress bar
 import 'nprogress/nprogress.css' // progress bar style
 import { getToken } from '@/utils/auth' // get token from cookie
 import getPageTitle from '@/utils/get-page-title'
+import { menuDataTranslate } from '@/utils/data-translate.js'
 
 NProgress.configure({ showSpinner: true }); // NProgress Configuration
 
 const whiteList = ['/login']; // no redirect whitelist
 
-router.beforeEach(async(to, from, next) => {
+router.beforeEach(async (to, from, next) => {
     // start progress bar
     NProgress.start();
 
@@ -22,14 +23,23 @@ router.beforeEach(async(to, from, next) => {
         const hasToken = getToken();
 
         if (hasToken) {
-            const hasGetUserInfo = store.getters.name;
-            if (hasGetUserInfo) {
+            const addRoutes = store.getters.addRoutes;
+            if (addRoutes && addRoutes.length) {
                 next();
             } else {
                 try {
                     // get user info
-                    await store.dispatch('user/getInfo');
-                    next();
+                    let userInfo = await store.dispatch('user/getInfo');
+
+                    // generate accessible route
+                    let accessedRoutes = await store.dispatch('route/getRoute', menuDataTranslate(userInfo.menuList, 0));
+
+                    // dynamically add accessible routes
+                    router.addRoutes(accessedRoutes);
+
+                    // hack method to ensure that addRoutes is complete
+                    // set the replace: true, so the navigation will not leave a history record
+                    next({ ...to, replace: true });
                 } catch (error) {
                     if (error != "401") {
                         // remove token and go to login page to re-login

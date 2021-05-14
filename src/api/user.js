@@ -15,13 +15,6 @@ export function getInfo() {
     })
 }
 
-export function getMenu() {
-    return request({
-        url: '/login/menu',
-        method: 'get'
-    })
-}
-
 export function logout() {
     return request({
         url: '/login/logout',

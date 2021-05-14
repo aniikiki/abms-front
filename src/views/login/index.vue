@@ -102,8 +102,8 @@ export default {
             this.$refs.loginForm.validate((valid) => {
                 if (valid) {
                     this.loginLoading(true);
-
-                    this.$store.dispatch('user/login', this.loginForm).then((userInfo) => {
+                    this.$store.dispatch('user/login', this.loginForm).then( async (userInfo) => {
+                        await this.$store.dispatch('route/resetRoute').catch(() => {});
                         this.$message({
                             message: '尊敬的' + userInfo.nickname + '，恭喜你登录成功',
                             type: 'success'

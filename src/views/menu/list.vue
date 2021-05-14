@@ -189,7 +189,7 @@ export default {
 
             this.loading.loading = true;
             getMenuList(data).then((res) => {
-                this.menu_list = menuDataTranslate(res, [], 0);
+                this.menu_list = menuDataTranslate(res, 0);
             }).catch(() => {}).finally(() => {
                 this.loading.loading = false;
             });

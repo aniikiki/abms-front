@@ -161,7 +161,7 @@ export default {
                 ]).then(axios.spread((menuListRes, roleMenuRes) => {
                     this.$refs.menuAssign.roleId = row.roleId;
                     this.$refs.menuAssign.roleName = row.roleName;
-                    this.$refs.menuAssign.menu_tree = menuDataTranslate(menuListRes, [], 0);
+                    this.$refs.menuAssign.menu_tree = menuDataTranslate(menuListRes, 0);
 
                     let assign_menu = [];
                     if (roleMenuRes && roleMenuRes.length) {
