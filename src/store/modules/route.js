@@ -8,7 +8,11 @@ const genAccessRoute = (menus) => {
         let route = {};
 
         route.name = item.menuUrl;
-        route.path = (item.pid === "0" ? "/" : "") + item.menuUrl;
+        if (item.menuType === "link") {
+            route.path = `${process.env.VUE_APP_BASE_API}/${item.menuUrl}`;
+        } else {
+            route.path = (item.pid === "0" ? "/" : "") + item.menuUrl;
+        }
         if (asyncRouteMap[route.name]) {
             route.component = asyncRouteMap[route.name].component;
         } else if (item.children && item.children.length) {
