@@ -1,2 +1,3 @@
 # abms-front
-* 在线预览地址：http://www.aniikiki.cn:9528/
+The address book manager system front end
+* online preview：http://www.aniikiki.cn:9528/
